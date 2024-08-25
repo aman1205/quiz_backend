@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  backend:
+    build: ./
+    container_name: quiz_app
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
