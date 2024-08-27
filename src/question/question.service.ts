@@ -5,6 +5,8 @@ import { Question } from './entity/question.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiResponse } from '../utils/api-response';
+import * as csvParser from 'csv-parser';
+  import { Readable } from 'stream';
 
 @Injectable()
 export class QuestionService {
@@ -124,6 +126,104 @@ export class QuestionService {
         error.message,
         HttpStatus.INTERNAL_SERVER_ERROR,
         'Failed to remove question',
+      );
+    }
+  }
+
+  async deleteAll(): Promise<ApiResponse<boolean>> {
+    try {
+      await this.questionRepository.clear();
+      return ApiResponse.success(null, 'All questions deleted successfully');
+    } catch (error) {
+      return ApiResponse.error(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to delete all questions',
+      );
+    }
+  }
+
+  async createMultiple(
+    createQuestionsDto: CreateQuestionDto[],
+  ): Promise<ApiResponse<Question[]>> {
+    try {
+      const questions: Question[] = [];
+  
+      for (const createQuestionDto of createQuestionsDto) {
+        const { text, category, correctAnswer, options } = createQuestionDto;
+  
+        if (!options || options.length === 0) {
+          return ApiResponse.error(
+            'Options cannot be empty',
+            HttpStatus.BAD_REQUEST,
+            'Failed to create questions',
+          );
+        }
+        if (!options.includes(correctAnswer)) {
+          return ApiResponse.error(
+            'Correct answer must be one of the provided options',
+            HttpStatus.BAD_REQUEST,
+            'Failed to create questions',
+          );
+        }
+  
+        const question = this.questionRepository.create({
+          text,
+          category,
+          correctAnswer,
+          options,
+        });
+        questions.push(question);
+      }
+  
+      await this.questionRepository.save(questions);
+      return ApiResponse.success(questions, 'Questions created successfully');
+    } catch (error) {
+      return ApiResponse.error(
+        error.message,
+        HttpStatus.BAD_REQUEST,
+        'Failed to create questions',
+      );
+    }
+  }
+  
+  async uploadFromCsv(file: Express.Multer.File): Promise<ApiResponse<Question[]>> {
+    try {
+      const questions: CreateQuestionDto[] = [];
+      const stream = Readable.from(file.buffer);
+      
+      return new Promise((resolve, reject) => {
+        stream
+          .pipe(csvParser())
+          .on('data', (row) => {
+            const { text, category, correctAnswer, options } = row;
+            const questionDto: CreateQuestionDto = {
+              text,
+              category,
+              correctAnswer,
+              options: options.split(';'), // assuming options are separated by ';' in the CSV
+            };
+            questions.push(questionDto);
+          })
+          .on('end', async () => {
+            const response = await this.createMultiple(questions);
+            resolve(response);
+          })
+          .on('error', (error) => {
+            reject(
+              ApiResponse.error(
+                error.message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                'Failed to upload questions from CSV',
+              ),
+            );
+          });
+      });
+    } catch (error) {
+      return ApiResponse.error(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to upload questions from CSV',
       );
     }
   }

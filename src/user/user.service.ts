@@ -14,6 +14,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<ApiResponse<User>> {
     try {
       const user = this.usersRepository.create(createUserDto);
+      console.log(user);
       await this.usersRepository.save(user);
       return ApiResponse.success(user, 'User created successfully!');
     } catch (error) {

@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   ManyToMany,
 } from 'typeorm';
 import { Quiz } from '../../quiz/entity/quiz.entity';
