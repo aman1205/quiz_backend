@@ -132,6 +132,14 @@ export class QuestionService {
 
   async deleteAll(): Promise<ApiResponse<boolean>> {
     try {
+      // const questions = await this.questionRepository.find();      
+      // for (const question of questions) {
+      //   await this.questionRepository
+      //     .createQueryBuilder()
+      //     .relation(Question, 'quizzes')
+      //     .of(question)
+      //     .remove(question.quizzes);
+      // }
       await this.questionRepository.clear();
       return ApiResponse.success(null, 'All questions deleted successfully');
     } catch (error) {
@@ -142,6 +150,9 @@ export class QuestionService {
       );
     }
   }
+  
+  
+  
 
   async createMultiple(
     createQuestionsDto: CreateQuestionDto[],
@@ -201,7 +212,7 @@ export class QuestionService {
               text,
               category,
               correctAnswer,
-              options: options.split(';'), // assuming options are separated by ';' in the CSV
+              options: options.split(';'),
             };
             questions.push(questionDto);
           })

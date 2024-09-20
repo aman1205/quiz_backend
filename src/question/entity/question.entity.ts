@@ -31,6 +31,6 @@ export class Question {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => Quiz, (quiz) => quiz.questions)
+  @ManyToMany(() => Quiz, (quiz) => quiz.questions , {cascade: true})
   quizzes: Quiz[];
 }

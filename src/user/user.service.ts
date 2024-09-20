@@ -4,19 +4,36 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiResponse } from '../utils/api-response';
+import { JwtService } from '@nestjs/jwt';
+
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<ApiResponse<User>> {
+  async create(createUserDto: CreateUserDto): Promise<ApiResponse<any>> {
     try {
+      if(await this.findOneByEmail(createUserDto.email)) {
+        return ApiResponse.error<User>(
+          'User already exists',
+          HttpStatus.BAD_REQUEST,
+          'Failed to create user',
+        );
+      }
       const user = this.usersRepository.create(createUserDto);
       console.log(user);
       await this.usersRepository.save(user);
-      return ApiResponse.success(user, 'User created successfully!');
+      const payload = {
+        email: user.email,
+        sub: user.id,
+        role: user.role,
+      };
+      const accessToken = this.jwtService.sign(payload);
+      const { password, ...newUser } = user;
+      return ApiResponse.success({newUser,accessToken}, 'User created successfully!');
     } catch (error) {
       return ApiResponse.error<User>(
         error.message,
@@ -27,7 +44,9 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.usersRepository.findOne({ where: { email },
+    select: ['id', 'email', 'role', 'createdAt'],
+    });
   }
 
   async findById(id: string): Promise<User | undefined> {
@@ -98,4 +117,5 @@ export class UserService {
       );
     }
   }
+
 }

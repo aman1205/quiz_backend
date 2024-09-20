@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ApiResponse } from '../utils/api-response';
 import { LoginDto } from './dto/login-dto';
+import {UserGoogleDto } from './dto/user.google.dto';
 
 @Injectable()
 export class AuthService {
@@ -59,5 +60,30 @@ export class AuthService {
   async profile(id: string): Promise<ApiResponse<any>> {
     const user = await this.usersService.findById(id);
     return ApiResponse.success(user, 'User profile retrieved successfully');
+  }
+
+  async googleAuth(userGoogleDto: UserGoogleDto): Promise<ApiResponse<any>> {
+    try {
+      const user = await this.usersService.findOneByEmail(userGoogleDto.email);
+      if (!user) {
+        return this.usersService.create(userGoogleDto);
+      }
+      const payload = {
+        email: user.email,
+        sub: user.id,
+        role: user.role,
+      };
+      const accessToken = this.jwtService.sign(payload);
+      return ApiResponse.success(
+        { user, access_token: accessToken },
+        'Login successful',
+      );
+    } catch (error) {
+      return ApiResponse.error<any>(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to login',
+      );
+    }
   }
 }

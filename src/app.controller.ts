@@ -1,11 +1,12 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode } from '@nestjs/common';
 
 @Controller('/')
 export class AppController {
   constructor() {}
 
   @Get('/check')
-  getHello( ): string {
-   return 'Hello World!';
+  @HttpCode(200)
+  getHello(): Record<string, string> {
+    return { message: 'Hello World!' };
   }
 }

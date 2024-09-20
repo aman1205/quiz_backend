@@ -49,7 +49,7 @@ import redisConfig from './config/redis.config';
         ttl: 5000, // Time to live in milliseconds
         limit: 20,  // Maximum number of requests within the ttl
       },
-    
+
     ]),
     UserModule,
     AuthModule,
@@ -65,4 +65,4 @@ import redisConfig from './config/redis.config';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

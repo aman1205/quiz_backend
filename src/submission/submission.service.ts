@@ -37,7 +37,7 @@ export class QuizSubmissionService {
   async createQuizSubmission(createQuizSubmissionDto: CreateQuizSubmissionDto) {
     const quizSubmission = this.quizSubmissionRepository.create(
       createQuizSubmissionDto,
-    );
+    );    
     await this.quizSubmissionRepository.save(quizSubmission);
     return ApiResponse.success(
       quizSubmission,
@@ -67,6 +67,8 @@ export class QuizSubmissionService {
       'Quiz submission retrieved successfully.',
     );
   }
+
+
 
   async getAllUserScores() {
     const quizSubmissions = await this.quizSubmissionRepository.find({
@@ -134,7 +136,6 @@ export class QuizSubmissionService {
     const submissionScores = await Promise.all(
       responses.map(async (submission) => {
         const score = await this.calculateScore(submission.answers);
-
         const answersWithCorrectAnswers = await Promise.all(
           submission.answers.map(async (answer) => {
             const correctAnswer = await getQuestionWithCorrectAnswer(
