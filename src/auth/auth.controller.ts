@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-dto';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from './authGuard/auth.guard';
 import { UserGoogleDto } from './dto/user.google.dto';
@@ -18,18 +18,18 @@ import { UserGoogleDto } from './dto/user.google.dto';
 @Controller('auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('login')
   @HttpCode(200)
   async login(@Body() loginDto: LoginDto): Promise<ApiResponse<any>> {
     return this.authService.login(loginDto);
   }
-  @Post('google/auth')
-  @HttpCode(200)
-  async googleAuth(@Body() userGoogleDto: UserGoogleDto): Promise<ApiResponse<any>> {
-    return this.authService.googleAuth(userGoogleDto);
-  }
+  // @Post('google/auth')
+  // @HttpCode(200)
+  // async googleAuth(@Body() userGoogleDto: UserGoogleDto): Promise<ApiResponse<any>> {
+  //   return this.authService.googleAuth(userGoogleDto);
+  // }
 
   @UseGuards(AuthGuard)
   @Get('profile')

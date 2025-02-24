@@ -2,16 +2,16 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import { LoginDto } from './dto/login-dto';
-import {UserGoogleDto } from './dto/user.google.dto';
+import { UserGoogleDto } from './dto/user.google.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(
     email: string,

@@ -12,7 +12,7 @@ import { AuthGuard } from './authGuard/auth.guard';
     PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'secretKey',
+      secret: process.env.JWT_SECRET || 'secretKey',    //TODO: Change this to a more secure secret key and remove or condition
       signOptions: { expiresIn: '4h' },
     }),
   ],

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { QuizSubmission } from './entity/quiz-submission.entity';
 import { CreateQuizSubmissionDto } from './dto/create-quizSubmission.dto';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import { Answer } from './entity/answer.entity';
 import { User } from '../user/entity/user.entity';
 import { Question } from './../question/entity/question.entity';
@@ -19,7 +19,7 @@ export class QuizSubmissionService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-  ) {}
+  ) { }
 
   private async calculateScore(answers: Answer[]): Promise<number> {
     let score = 0;
@@ -37,7 +37,7 @@ export class QuizSubmissionService {
   async createQuizSubmission(createQuizSubmissionDto: CreateQuizSubmissionDto) {
     const quizSubmission = this.quizSubmissionRepository.create(
       createQuizSubmissionDto,
-    );    
+    );
     await this.quizSubmissionRepository.save(quizSubmission);
     return ApiResponse.success(
       quizSubmission,

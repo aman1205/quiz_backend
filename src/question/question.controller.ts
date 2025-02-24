@@ -70,6 +70,12 @@ export class QuestionController {
   async removeAll() {
     return await this.questionService.deleteAll();
   }
+  @Get('/sub/categorys')
+  @HttpCode(201)
+  async getCategoies() {
+    console.log('kgneroigbe')
+    return await this.questionService.getCategory();
+  }
 
   @Post('/upload')
   @HttpCode(201)

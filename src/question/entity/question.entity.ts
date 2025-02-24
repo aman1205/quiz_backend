@@ -19,6 +19,9 @@ export class Question {
   @Column()
   category: string;
 
+  @Column({nullable:true})
+  image_url:string
+
   @Column('simple-array')
   options: string[];
 

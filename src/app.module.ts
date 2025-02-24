@@ -31,22 +31,22 @@ import redisConfig from './config/redis.config';
         return dataSource;
       },
     }),
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get<string>('redis.host'),
-        port: configService.get<number>('redis.port'),
-        password: configService.get<string>('redis.password'),
-        max: configService.get<number>('redis.max'),
-        ttl: configService.get<number>('redis.ttl'),
-        isGlobal: true,
-      }),
-    }),
+    // CacheModule.registerAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     store: redisStore,
+    //     host: configService.get<string>('redis.host'),
+    //     port: configService.get<number>('redis.port'),
+    //     password: configService.get<string>('redis.password'),
+    //     max: configService.get<number>('redis.max'),
+    //     ttl: configService.get<number>('redis.ttl'),
+    //     isGlobal: true,
+    //   }),
+    // }),
     ThrottlerModule.forRoot([
       {
-        ttl: 5000, // Time to live in milliseconds
+        ttl: 10000, // Time to live in milliseconds
         limit: 20,  // Maximum number of requests within the ttl
       },
 

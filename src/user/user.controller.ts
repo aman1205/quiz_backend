@@ -17,7 +17,8 @@ import { AuthGuard } from '../auth/authGuard/auth.guard';
 import { RolesGuard } from '../auth/roleGuard/roles.guard';
 import { Roles } from '../auth/roleGuard/roles.decorator';
 import { UserRole } from '../user/enum/role.enum';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
+import { PaginationDto } from 'src/core/modal/pagination.dto';
 
 
 @ApiTags('user')
@@ -42,13 +43,16 @@ export class UserController {
 
   @Get('/email')
   async findByEmail(@Query('email') email: string) {
-    const user= await this.userService.findOneByEmail(email);
+    const user = await this.userService.findOneByEmail(email);
     return ApiResponse.success(user, 'User found successfully!');
   }
 
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Get('/findall')
+  // async findAll(@Query() paginationDto: PaginationDto) {
+  //   return await this.userService.findAll(paginationDto);
+  // }
   async findAll() {
     return await this.userService.findAll();
   }

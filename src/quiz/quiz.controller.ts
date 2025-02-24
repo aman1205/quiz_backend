@@ -25,8 +25,8 @@ import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
 @ApiTags('quiz')
 @Controller('quiz')
 @ApiBearerAuth()
-// @UseGuards(AuthGuard, RolesGuard)
-// @Roles(UserRole.ADMIN)
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 

@@ -6,7 +6,9 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const PORT = process.env.SERVER_PORT || 8080;
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -5,7 +5,7 @@ import { Quiz } from '../quiz/entity/quiz.entity';
 import { Question } from '../question/entity/question.entity';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import { In } from 'typeorm';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class QuizService {
 
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
-  ) {}
+  ) { }
 
   async createQuiz(createQuizDto: CreateQuizDto) {
     const { title, questionIds } = createQuizDto;

@@ -3,20 +3,22 @@ import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import { JwtService } from '@nestjs/jwt';
+import { PaginationDto } from 'src/core/modal/pagination.dto';
+import { paginate } from 'src/core/utils/paginate';
 
 
 @Injectable()
 export class UserService {
-  constructor(
+  constructor(  
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<ApiResponse<any>> {
     try {
-      if(await this.findOneByEmail(createUserDto.email)) {
+      if (await this.findOneByEmail(createUserDto.email)) {
         return ApiResponse.error<User>(
           'User already exists',
           HttpStatus.BAD_REQUEST,
@@ -33,7 +35,7 @@ export class UserService {
       };
       const accessToken = this.jwtService.sign(payload);
       const { password, ...newUser } = user;
-      return ApiResponse.success({newUser,accessToken}, 'User created successfully!');
+      return ApiResponse.success({ newUser, accessToken }, 'User created successfully!');
     } catch (error) {
       return ApiResponse.error<User>(
         error.message,
@@ -44,15 +46,16 @@ export class UserService {
   }
 
   async findOneByEmail(email: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { email },
-    select: ['id', 'email', 'role', 'createdAt'],
+    return this.usersRepository.findOne({
+      where: { email },
+      // select: ['id', 'email', 'role', 'createdAt'],
     });
   }
 
   async findById(id: string): Promise<User | undefined> {
     return this.usersRepository.findOne({
       where: { id },
-      select: ['id', 'email', 'role', 'createdAt'],
+      select: ['id', 'name', 'email', 'role', 'createdAt'],
       relations: ['quizSubmissions'],
     });
   }
@@ -61,7 +64,7 @@ export class UserService {
     try {
       const user = await this.usersRepository.findOne({
         where: { id },
-        select: ['id', 'email', 'role', 'createdAt'],
+        select: ['id','name' ,'email', 'role', 'createdAt'],
       });
       if (!user) {
         return ApiResponse.error<User>('User not found', HttpStatus.NOT_FOUND);
@@ -79,7 +82,7 @@ export class UserService {
   async findAll(): Promise<ApiResponse<User[]>> {
     try {
       const users = await this.usersRepository.find({
-        select: ['id', 'email', 'role', 'createdAt'],
+        select: ['id', 'name', 'email', 'role', 'createdAt'],
       });
       return ApiResponse.success(users, 'Users retrieved successfully!');
     } catch (error) {
@@ -90,6 +93,23 @@ export class UserService {
       );
     }
   }
+  // async findAll(paginationDto: PaginationDto): Promise<ApiResponse<any>> {
+  //   try {
+  //     const queryBuilder = this.usersRepository.createQueryBuilder('user')
+  //       .select(['user.id', 'user.name', 'user.email', 'user.role', 'user.createdAt']);
+  
+  //     const result = await paginate(queryBuilder, paginationDto);
+  
+  //     return ApiResponse.success(result, 'Users retrieved successfully!');
+  //   } catch (error) {
+  //     return ApiResponse.error(
+  //       error.message,
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //       'Failed to retrieve users'
+  //     );
+  //   }
+  // }
+  
 
   //TODO: Implement the update method
   async update(): Promise<ApiResponse<boolean>> {

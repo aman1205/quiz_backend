@@ -4,22 +4,22 @@ import { Repository } from 'typeorm';
 import { Question } from './entity/question.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { ApiResponse } from '../utils/api-response';
+import { ApiResponse } from '../core/utils/api-response';
 import * as csvParser from 'csv-parser';
-  import { Readable } from 'stream';
+import { Readable } from 'stream';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
-  ) {}
+  ) { }
 
   async create(
     createQuestionDto: CreateQuestionDto,
   ): Promise<ApiResponse<Question>> {
     try {
-      const { text, category, correctAnswer, options } = createQuestionDto;
+      const { text, category, correctAnswer, options ,image_url } = createQuestionDto;
 
       if (!options || options.length === 0) {
         return ApiResponse.error(
@@ -41,6 +41,7 @@ export class QuestionService {
         category,
         correctAnswer,
         options,
+        image_url
       });
       await this.questionRepository.save(question);
 
@@ -150,19 +151,40 @@ export class QuestionService {
       );
     }
   }
-  
-  
-  
+
+  async getCategory(): Promise<ApiResponse<object[]>> {
+    try {
+        //TODO DID WE NEED TO STORE CAT IN DB ? OR USE ENUM OR ANYTHINH 
+      const categories = [
+        { label: 'Electronics', value: 'Electronics' },
+        { label: 'Furniture', value: 'Furniture' },
+        { label: 'Clothing', value: 'Clothing' },
+        { label: 'Toys', value: 'Toys' },
+        { label: 'Groceries', value: 'Groceries' },
+        { label: 'Books', value: 'Books' },
+        { label: 'Jewelry', value: 'Jewelry' },
+        { label: 'Beauty Products', value: 'Beauty Products' }
+      ];
+
+      return ApiResponse.success(categories, 'Categories retrieved successfully');
+    } catch (error) {
+      return ApiResponse.error(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to retrieve categories',
+      );
+    }
+  }
 
   async createMultiple(
     createQuestionsDto: CreateQuestionDto[],
   ): Promise<ApiResponse<Question[]>> {
     try {
       const questions: Question[] = [];
-  
+
       for (const createQuestionDto of createQuestionsDto) {
         const { text, category, correctAnswer, options } = createQuestionDto;
-  
+
         if (!options || options.length === 0) {
           return ApiResponse.error(
             'Options cannot be empty',
@@ -177,7 +199,7 @@ export class QuestionService {
             'Failed to create questions',
           );
         }
-  
+
         const question = this.questionRepository.create({
           text,
           category,
@@ -186,7 +208,7 @@ export class QuestionService {
         });
         questions.push(question);
       }
-  
+
       await this.questionRepository.save(questions);
       return ApiResponse.success(questions, 'Questions created successfully');
     } catch (error) {
@@ -197,20 +219,21 @@ export class QuestionService {
       );
     }
   }
-  
+
   async uploadFromCsv(file: Express.Multer.File): Promise<ApiResponse<Question[]>> {
     try {
       const questions: CreateQuestionDto[] = [];
       const stream = Readable.from(file.buffer);
-      
+
       return new Promise((resolve, reject) => {
         stream
           .pipe(csvParser())
           .on('data', (row) => {
-            const { text, category, correctAnswer, options } = row;
+            const { text, category, image_url, correctAnswer, options  } = row;
             const questionDto: CreateQuestionDto = {
               text,
               category,
+              image_url,
               correctAnswer,
               options: options.split(';'),
             };
