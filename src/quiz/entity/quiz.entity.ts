@@ -19,16 +19,35 @@ export class Quiz {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  category: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+
+  @Column({ default: 10 })
+  timeInMinutes: number;
+
+  @Column({ default: 0 })
+  participants: number;
+
+  @Column({ type: 'enum', enum: ['Easy', 'Intermediate', 'Hard'], default: 'Easy' })
+  difficulty: 'Easy' | 'Intermediate' | 'Hard';
+
+  @Column({ default: false })
+  featured: boolean;
+
   @ManyToMany(() => Question, (question) => question.quizzes)
-  @JoinTable() // This creates a join table to manage the many-to-many relationship
-  questions: Question[];
+  @JoinTable()
+  questionsList: Question[];
+
+  @OneToMany(() => QuizSubmission, (quizSubmission) => quizSubmission.quiz)
+  quizSubmissions: QuizSubmission[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => QuizSubmission, (quizSubmission) => quizSubmission.quiz)
-  quizSubmissions: QuizSubmission[];
 }

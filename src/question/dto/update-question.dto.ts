@@ -21,4 +21,9 @@ export class UpdateQuestionDto {
   @IsArray()
   @IsOptional()
   options?: string[];
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  image_url?: string;
 }

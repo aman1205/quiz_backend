@@ -107,6 +107,7 @@ export class QuestionService {
       question.correctAnswer =
         updateQuestionDto.correctAnswer ?? question.correctAnswer;
       question.options = updateQuestionDto.options ?? question.options;
+      question.image_url = updateQuestionDto.image_url ?? question.image_url;
       await this.questionRepository.save(question);
       return ApiResponse.success(question, 'Question updated successfully');
     } catch (error) {
@@ -183,7 +184,7 @@ export class QuestionService {
       const questions: Question[] = [];
 
       for (const createQuestionDto of createQuestionsDto) {
-        const { text, category, correctAnswer, options } = createQuestionDto;
+        const { text, category, correctAnswer, options,image_url } = createQuestionDto;
 
         if (!options || options.length === 0) {
           return ApiResponse.error(
@@ -205,6 +206,7 @@ export class QuestionService {
           category,
           correctAnswer,
           options,
+          image_url
         });
         questions.push(question);
       }
