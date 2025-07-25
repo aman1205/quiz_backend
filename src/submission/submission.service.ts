@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { QuizSubmission } from './entity/quiz-submission.entity';
@@ -35,15 +35,40 @@ export class QuizSubmissionService {
   }
 
   async createQuizSubmission(createQuizSubmissionDto: CreateQuizSubmissionDto) {
-    const quizSubmission = this.quizSubmissionRepository.create(
-      createQuizSubmissionDto,
-    );
-    await this.quizSubmissionRepository.save(quizSubmission);
-    return ApiResponse.success(
-      quizSubmission,
-      HttpStatus.CREATED,
-      'Quiz submission created successfully.',
-    );
+    const { quizId, userId } = createQuizSubmissionDto;
+  
+    // Check for existing submission
+    const existingSubmission = await this.quizSubmissionRepository.findOne({
+      where: { quizId, userId },
+    });
+  
+    if (existingSubmission) {
+      console.log('Duplicate submission detected. Throwing error.');
+      throw new HttpException(
+        {
+          success: false,
+          message: 'You have already submitted this quiz.',
+          error: 'Duplicate submission not allowed.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  
+    try {
+      const quizSubmission = this.quizSubmissionRepository.create(createQuizSubmissionDto);
+      await this.quizSubmissionRepository.save(quizSubmission);
+      return ApiResponse.success(
+        quizSubmission,
+        HttpStatus.CREATED,
+        'Quiz submission created successfully.',
+      );
+    } catch (error) {
+      return ApiResponse.error(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'An error occurred while creating the quiz submission.',
+      );
+    }
   }
 
   async findAllQuizSubmissions() {

@@ -44,13 +44,12 @@ export class AuthService {
     );
     if (validationResponse.success) {
       const payload = {
-        email: loginDto.email,
         sub: validationResponse.data.id,
         role: validationResponse.data.role,
       };
       const accessToken = this.jwtService.sign(payload);
       return ApiResponse.success(
-        { user: validationResponse.data, access_token: accessToken },
+        { ...validationResponse.data, access_token: accessToken },
         'Login successful',
       );
     }

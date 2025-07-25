@@ -30,9 +30,8 @@ export class QuizSubmissionController {
   constructor(private readonly quizSubmissionService: QuizSubmissionService) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(AuthGuard , RolesGuard)
-  // @Roles(UserRole.ADMIN, UserRole.USER)
+  @UseGuards(AuthGuard , RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async createQuizSubmission(
     @Body() createQuizSubmissionDto: CreateQuizSubmissionDto,
   ) {
@@ -44,7 +43,6 @@ export class QuizSubmissionController {
   @Get('/leaderboard')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.OK)
   async leaderboard(@Request() req) {
     return await this.quizSubmissionService.getAllUserScores();
   }
@@ -52,7 +50,6 @@ export class QuizSubmissionController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.OK)
   async findAllQuizSubmissions() {
     return await this.quizSubmissionService.findAllQuizSubmissions();
   }
@@ -60,7 +57,6 @@ export class QuizSubmissionController {
   @Get('/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.OK)
   async findOneQuizSubmission(@Param('id') id: string) {
     return await this.quizSubmissionService.findOne(id);
   }
@@ -68,7 +64,6 @@ export class QuizSubmissionController {
   @Delete('/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.NO_CONTENT)
   async removeQuizSubmission(@Param('id') id: string) {
     return await this.quizSubmissionService.deleteSubmission(id);
   }
@@ -76,7 +71,6 @@ export class QuizSubmissionController {
   @Get('/user/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.OK)
   async findUserSubmissions(@Param('id') id: string) {
     return await this.quizSubmissionService.getResponsesByUser(id);
   }
@@ -84,7 +78,6 @@ export class QuizSubmissionController {
   @Delete()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @HttpCode(HttpStatus.NO_CONTENT)
   async removeAllQuizSubmissions() {
     return await this.quizSubmissionService.deleteAllSubmissions();
   }

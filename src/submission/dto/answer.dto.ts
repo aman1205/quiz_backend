@@ -7,5 +7,5 @@ export class AnswerDto {
 
   @IsString()
   @IsNotEmpty()
-  selectedAnswer: string;
+    selectedAnswer: string;
 }
