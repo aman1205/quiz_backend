@@ -4,7 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
-import { ThrottlerGuard, ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
+import {
+  ThrottlerGuard,
+  ThrottlerModule,
+  ThrottlerModuleOptions,
+} from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
 import { UserModule } from './user/user.module';
@@ -47,9 +51,8 @@ import redisConfig from './config/redis.config';
     ThrottlerModule.forRoot([
       {
         ttl: 10000, // Time to live in milliseconds
-        limit: 20,  // Maximum number of requests within the ttl
+        limit: 20, // Maximum number of requests within the ttl
       },
-
     ]),
     UserModule,
     AuthModule,
@@ -65,4 +68,4 @@ import redisConfig from './config/redis.config';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

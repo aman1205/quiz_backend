@@ -13,13 +13,14 @@ export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
-  ) { }
+  ) {}
 
   async create(
     createQuestionDto: CreateQuestionDto,
   ): Promise<ApiResponse<Question>> {
     try {
-      const { text, category, correctAnswer, options ,image_url } = createQuestionDto;
+      const { text, category, correctAnswer, options, image_url } =
+        createQuestionDto;
 
       if (!options || options.length === 0) {
         return ApiResponse.error(
@@ -41,7 +42,7 @@ export class QuestionService {
         category,
         correctAnswer,
         options,
-        image_url
+        image_url,
       });
       await this.questionRepository.save(question);
 
@@ -134,7 +135,7 @@ export class QuestionService {
 
   async deleteAll(): Promise<ApiResponse<boolean>> {
     try {
-      // const questions = await this.questionRepository.find();      
+      // const questions = await this.questionRepository.find();
       // for (const question of questions) {
       //   await this.questionRepository
       //     .createQueryBuilder()
@@ -155,7 +156,7 @@ export class QuestionService {
 
   async getCategory(): Promise<ApiResponse<object[]>> {
     try {
-        //TODO DID WE NEED TO STORE CAT IN DB ? OR USE ENUM OR ANYTHINH 
+      //TODO DID WE NEED TO STORE CAT IN DB ? OR USE ENUM OR ANYTHINH
       const categories = [
         { label: 'Electronics', value: 'Electronics' },
         { label: 'Furniture', value: 'Furniture' },
@@ -164,10 +165,13 @@ export class QuestionService {
         { label: 'Groceries', value: 'Groceries' },
         { label: 'Books', value: 'Books' },
         { label: 'Jewelry', value: 'Jewelry' },
-        { label: 'Beauty Products', value: 'Beauty Products' }
+        { label: 'Beauty Products', value: 'Beauty Products' },
       ];
 
-      return ApiResponse.success(categories, 'Categories retrieved successfully');
+      return ApiResponse.success(
+        categories,
+        'Categories retrieved successfully',
+      );
     } catch (error) {
       return ApiResponse.error(
         error.message,
@@ -184,7 +188,8 @@ export class QuestionService {
       const questions: Question[] = [];
 
       for (const createQuestionDto of createQuestionsDto) {
-        const { text, category, correctAnswer, options,image_url } = createQuestionDto;
+        const { text, category, correctAnswer, options, image_url } =
+          createQuestionDto;
 
         if (!options || options.length === 0) {
           return ApiResponse.error(
@@ -206,7 +211,7 @@ export class QuestionService {
           category,
           correctAnswer,
           options,
-          image_url
+          image_url,
         });
         questions.push(question);
       }
@@ -222,7 +227,9 @@ export class QuestionService {
     }
   }
 
-  async uploadFromCsv(file: Express.Multer.File): Promise<ApiResponse<Question[]>> {
+  async uploadFromCsv(
+    file: Express.Multer.File,
+  ): Promise<ApiResponse<Question[]>> {
     try {
       const questions: CreateQuestionDto[] = [];
       const stream = Readable.from(file.buffer);
@@ -231,7 +238,7 @@ export class QuestionService {
         stream
           .pipe(csvParser())
           .on('data', (row) => {
-            const { text, category, image_url, correctAnswer, options  } = row;
+            const { text, category, image_url, correctAnswer, options } = row;
             const questionDto: CreateQuestionDto = {
               text,
               category,

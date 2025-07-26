@@ -73,7 +73,7 @@ export class QuestionController {
   @Get('/sub/categorys')
   @HttpCode(201)
   async getCategoies() {
-    console.log('kgneroigbe')
+    console.log('kgneroigbe');
     return await this.questionService.getCategory();
   }
 

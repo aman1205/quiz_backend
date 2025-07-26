@@ -11,7 +11,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async validateUser(
     email: string,

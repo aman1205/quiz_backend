@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { QuizSubmission } from './entity/quiz-submission.entity';
@@ -19,7 +24,7 @@ export class QuizSubmissionService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
-  ) { }
+  ) {}
 
   private async calculateScore(answers: Answer[]): Promise<number> {
     let score = 0;
@@ -36,12 +41,12 @@ export class QuizSubmissionService {
 
   async createQuizSubmission(createQuizSubmissionDto: CreateQuizSubmissionDto) {
     const { quizId, userId } = createQuizSubmissionDto;
-  
+
     // Check for existing submission
     const existingSubmission = await this.quizSubmissionRepository.findOne({
       where: { quizId, userId },
     });
-  
+
     if (existingSubmission) {
       console.log('Duplicate submission detected. Throwing error.');
       throw new HttpException(
@@ -53,9 +58,11 @@ export class QuizSubmissionService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  
+
     try {
-      const quizSubmission = this.quizSubmissionRepository.create(createQuizSubmissionDto);
+      const quizSubmission = this.quizSubmissionRepository.create(
+        createQuizSubmissionDto,
+      );
       await this.quizSubmissionRepository.save(quizSubmission);
       return ApiResponse.success(
         quizSubmission,
@@ -92,8 +99,6 @@ export class QuizSubmissionService {
       'Quiz submission retrieved successfully.',
     );
   }
-
-
 
   async getAllUserScores() {
     const quizSubmissions = await this.quizSubmissionRepository.find({

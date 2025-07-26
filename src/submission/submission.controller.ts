@@ -30,7 +30,7 @@ export class QuizSubmissionController {
   constructor(private readonly quizSubmissionService: QuizSubmissionService) {}
 
   @Post()
-  @UseGuards(AuthGuard , RolesGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.USER)
   async createQuizSubmission(
     @Body() createQuizSubmissionDto: CreateQuizSubmissionDto,

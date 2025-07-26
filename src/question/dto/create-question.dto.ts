@@ -15,7 +15,7 @@ export class CreateQuestionDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  image_url:string;
+  image_url: string;
 
   @ApiProperty()
   @IsString()

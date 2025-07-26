@@ -20,7 +20,6 @@ import { UserRole } from '../user/enum/role.enum';
 import { ApiResponse } from '../core/utils/api-response';
 import { PaginationDto } from 'src/core/modal/pagination.dto';
 
-
 @ApiTags('user')
 @ApiBearerAuth()
 @Controller({
@@ -28,7 +27,7 @@ import { PaginationDto } from 'src/core/modal/pagination.dto';
   version: '1',
 })
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/register')
   @HttpCode(201)

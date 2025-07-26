@@ -18,7 +18,7 @@ import { UserGoogleDto } from './dto/user.google.dto';
 @Controller('auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(200)

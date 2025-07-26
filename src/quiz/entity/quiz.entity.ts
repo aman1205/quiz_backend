@@ -25,14 +25,17 @@ export class Quiz {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-
   @Column({ default: 10 })
   timeInMinutes: number;
 
   @Column({ default: 0 })
   participants: number;
 
-  @Column({ type: 'enum', enum: ['Easy', 'Intermediate', 'Hard'], default: 'Easy' })
+  @Column({
+    type: 'enum',
+    enum: ['Easy', 'Intermediate', 'Hard'],
+    default: 'Easy',
+  })
   difficulty: 'Easy' | 'Intermediate' | 'Hard';
 
   @Column({ default: false })

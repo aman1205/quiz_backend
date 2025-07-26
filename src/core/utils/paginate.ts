@@ -3,7 +3,7 @@ import { PaginationDto } from '../modal/pagination.dto';
 
 export const paginate = async <T>(
   queryBuilder: SelectQueryBuilder<T>,
-  paginationDto: PaginationDto
+  paginationDto: PaginationDto,
 ) => {
   const { offset, limit } = paginationDto;
 

@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { 
-  IsString, 
-  IsNotEmpty, 
-  IsArray, 
-  ArrayNotEmpty, 
-  IsEnum, 
-  IsInt, 
-  Min, 
-  IsBoolean, 
-  IsOptional 
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  ArrayNotEmpty,
+  IsEnum,
+  IsInt,
+  Min,
+  IsBoolean,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateQuizDto {
@@ -33,7 +33,6 @@ export class CreateQuizDto {
   @IsString({ each: true })
   questionIds: string[];
 
-
   @ApiProperty({ description: 'Time limit in minutes', example: 15 })
   @IsInt()
   @Min(1)
@@ -44,9 +43,9 @@ export class CreateQuizDto {
   @Min(0)
   participants: number;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Difficulty level of the quiz',
-    enum: ['Easy', 'Intermediate', 'Hard']
+    enum: ['Easy', 'Intermediate', 'Hard'],
   })
   @IsEnum(['Easy', 'Intermediate', 'Hard'])
   difficulty: 'Easy' | 'Intermediate' | 'Hard';

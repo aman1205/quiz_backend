@@ -26,7 +26,7 @@ export class Question {
   options: string[];
 
   @Column()
-  correctAnswer: string; 
+  correctAnswer: string;
 
   @ManyToMany(() => Quiz, (quiz) => quiz.questionsList, { cascade: true })
   quizzes: Quiz[];

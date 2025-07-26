@@ -8,13 +8,12 @@ import { JwtService } from '@nestjs/jwt';
 import { PaginationDto } from 'src/core/modal/pagination.dto';
 import { paginate } from 'src/core/utils/paginate';
 
-
 @Injectable()
 export class UserService {
-  constructor(  
+  constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<ApiResponse<any>> {
     try {
@@ -35,7 +34,10 @@ export class UserService {
       };
       const accessToken = this.jwtService.sign(payload);
       const { password, ...newUser } = user;
-      return ApiResponse.success({ newUser, accessToken }, 'User created successfully!');
+      return ApiResponse.success(
+        { newUser, accessToken },
+        'User created successfully!',
+      );
     } catch (error) {
       return ApiResponse.error<User>(
         error.message,
@@ -64,7 +66,7 @@ export class UserService {
     try {
       const user = await this.usersRepository.findOne({
         where: { id },
-        select: ['id','name' ,'email', 'role', 'createdAt'],
+        select: ['id', 'name', 'email', 'role', 'createdAt'],
       });
       if (!user) {
         return ApiResponse.error<User>('User not found', HttpStatus.NOT_FOUND);
@@ -97,9 +99,9 @@ export class UserService {
   //   try {
   //     const queryBuilder = this.usersRepository.createQueryBuilder('user')
   //       .select(['user.id', 'user.name', 'user.email', 'user.role', 'user.createdAt']);
-  
+
   //     const result = await paginate(queryBuilder, paginationDto);
-  
+
   //     return ApiResponse.success(result, 'Users retrieved successfully!');
   //   } catch (error) {
   //     return ApiResponse.error(
@@ -109,7 +111,6 @@ export class UserService {
   //     );
   //   }
   // }
-  
 
   //TODO: Implement the update method
   async update(): Promise<ApiResponse<boolean>> {
@@ -137,5 +138,4 @@ export class UserService {
       );
     }
   }
-
 }

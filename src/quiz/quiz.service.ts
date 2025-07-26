@@ -18,7 +18,16 @@ export class QuizService {
   ) {}
 
   async createQuiz(createQuizDto: CreateQuizDto) {
-    const { title, questionIds, category, description, timeInMinutes, participants, difficulty, featured } = createQuizDto;
+    const {
+      title,
+      questionIds,
+      category,
+      description,
+      timeInMinutes,
+      participants,
+      difficulty,
+      featured,
+    } = createQuizDto;
 
     const questions = await this.questionRepository.findBy({
       id: In(questionIds),
@@ -41,7 +50,11 @@ export class QuizService {
 
     await this.quizRepository.save(quiz);
 
-    return ApiResponse.success(quiz, HttpStatus.CREATED, 'Quiz created successfully');
+    return ApiResponse.success(
+      quiz,
+      HttpStatus.CREATED,
+      'Quiz created successfully',
+    );
   }
 
   async findAllQuizzes() {
@@ -54,14 +67,17 @@ export class QuizService {
           options: true,
           category: true,
         },
-        
       },
       order: {
         featured: 'DESC',
       },
     });
 
-    return ApiResponse.success(quizzes, HttpStatus.OK, 'Quizzes fetched successfully');
+    return ApiResponse.success(
+      quizzes,
+      HttpStatus.OK,
+      'Quizzes fetched successfully',
+    );
   }
 
   async findOne(id: string) {
@@ -82,7 +98,11 @@ export class QuizService {
       throw new NotFoundException('Quiz not found');
     }
 
-    return ApiResponse.success(quiz, HttpStatus.OK, 'Quiz fetched successfully');
+    return ApiResponse.success(
+      quiz,
+      HttpStatus.OK,
+      'Quiz fetched successfully',
+    );
   }
 
   async updateQuiz(id: string, updateQuizDto: UpdateQuizDto) {
@@ -98,10 +118,13 @@ export class QuizService {
     if (updateQuizDto.title) quiz.title = updateQuizDto.title;
     if (updateQuizDto.category) quiz.category = updateQuizDto.category;
     if (updateQuizDto.description) quiz.description = updateQuizDto.description;
-    if (updateQuizDto.timeInMinutes !== undefined) quiz.timeInMinutes = updateQuizDto.timeInMinutes;
-    if (updateQuizDto.participants !== undefined) quiz.participants = updateQuizDto.participants;
+    if (updateQuizDto.timeInMinutes !== undefined)
+      quiz.timeInMinutes = updateQuizDto.timeInMinutes;
+    if (updateQuizDto.participants !== undefined)
+      quiz.participants = updateQuizDto.participants;
     if (updateQuizDto.difficulty) quiz.difficulty = updateQuizDto.difficulty;
-    if (updateQuizDto.featured !== undefined) quiz.featured = updateQuizDto.featured;
+    if (updateQuizDto.featured !== undefined)
+      quiz.featured = updateQuizDto.featured;
 
     if (updateQuizDto.questionIds) {
       const questions = await this.questionRepository.findBy({
@@ -117,7 +140,11 @@ export class QuizService {
 
     const updatedQuiz = await this.quizRepository.save(quiz);
 
-    return ApiResponse.success(updatedQuiz, HttpStatus.OK, 'Quiz updated successfully');
+    return ApiResponse.success(
+      updatedQuiz,
+      HttpStatus.OK,
+      'Quiz updated successfully',
+    );
   }
 
   async removeQuiz(id: string) {
@@ -126,6 +153,10 @@ export class QuizService {
       throw new NotFoundException('Quiz not found');
     }
 
-    return ApiResponse.success(true, HttpStatus.OK, 'Quiz deleted successfully');
+    return ApiResponse.success(
+      true,
+      HttpStatus.OK,
+      'Quiz deleted successfully',
+    );
   }
 }
